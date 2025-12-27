@@ -64,7 +64,7 @@ export class ChatController {
         next: NextFunction
     ): Promise<void> {
         try {
-            const { sessionId } = req.params;
+            const { sessionId } = req.params as { sessionId: string };
 
             logger.info('Fetching conversation history', { sessionId });
 
