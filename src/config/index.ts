@@ -8,6 +8,7 @@ interface Config {
     databaseUrl: string;
     geminiApiKey: string;
     useMockLLM: boolean;
+    corsOrigin: string;
 }
 
 const config: Config = {
@@ -16,6 +17,7 @@ const config: Config = {
     databaseUrl: process.env.DATABASE_URL || '',
     geminiApiKey: process.env.GEMINI_API_KEY || '',
     useMockLLM: process.env.MOCK_MODE === 'true',
+    corsOrigin: process.env.CORS_ORIGIN || 'http://localhost:5173',
 };
 
 // Startup Visibility Log (Mandatory)
