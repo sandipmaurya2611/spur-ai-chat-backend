@@ -3,7 +3,7 @@ import { ValidationError } from '../utils/errors';
 
 export const validateChatMessage = (
     req: Request,
-    res: Response,
+    _res: Response,
     next: NextFunction
 ): void => {
     const { message, sessionId } = req.body;
@@ -39,7 +39,7 @@ export const validateChatMessage = (
 
 export const validateSessionId = (
     req: Request,
-    res: Response,
+    _res: Response,
     next: NextFunction
 ): void => {
     const { sessionId } = req.params;

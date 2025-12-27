@@ -2,14 +2,13 @@ import { Request, Response, NextFunction } from 'express';
 import { conversationRepository } from '../repositories/conversation.repo';
 import { messageRepository } from '../repositories/message.repo';
 import { llmService } from '../services/llm.service';
-import { ChatRequest, ChatResponse, HistoryResponse } from '../types';
 import { NotFoundError } from '../utils/errors';
 import { logger } from '../utils/logger';
 
 export class ChatController {
     async sendMessage(
-        req: Request<{}, {}, ChatRequest>,
-        res: Response<ChatResponse>,
+        req: Request,
+        res: Response,
         next: NextFunction
     ): Promise<void> {
         try {
@@ -60,8 +59,8 @@ export class ChatController {
     }
 
     async getHistory(
-        req: Request<{ sessionId: string }>,
-        res: Response<HistoryResponse>,
+        req: Request,
+        res: Response,
         next: NextFunction
     ): Promise<void> {
         try {
