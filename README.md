@@ -1,144 +1,94 @@
-# Chat Backend API - SQLite3 Version
+# AI Support Chat - Backend
 
-Production-grade backend for AI chat support agent using SQLite3.
+A production-grade, highly scalable backend for an AI-powered chat support agent. Built with **Node.js**, **Express**, and **TypeScript**, it features a robust **PostgreSQL** integration (Supabase) and leverages the **Google Gemini AI** for intelligent responses.
 
-## Tech Stack
+## 🚀 Tech Stack
 
-- Node.js + TypeScript
-- Express.js
-- SQLite3 (better-sqlite3)
-- OpenAI API
+- **Runtime:** [Node.js](https://nodejs.org/) (v20+)
+- **Framework:** [Express](https://expressjs.com/)
+- **Language:** [TypeScript](https://www.typescriptlang.org/)
+- **Database:** [PostgreSQL](https://www.postgresql.org/) (via [Supabase](https://supabase.com/))
+- **AI Engine:** [Google Gemini AI](https://ai.google.dev/) (Generative AI)
+- **Environment Management:** [dotenv](https://github.com/motdotla/dotenv)
+- **CORS:** [cors](https://github.com/expressjs/cors)
+- **Logging:** Custom Winston-based Logger
+- **Build Tool:** [tsc](https://www.typescriptlang.org/docs/handbook/compiler-options.html) (TypeScript Compiler)
 
-## Setup
+## ✨ Key Features
 
-### 1. Install Dependencies
+- **Gemini AI Integration:** Advanced LLM capabilities for generating contextual support responses.
+- **PostgreSQL Persistence:** Permanent storage for conversations and messages using a robust SQL schema.
+- **Production CORS Handling:** Secure, environment-driven origin whitelisting for Vercel/Production safety.
+- **Strict Type Safety:** Full TypeScript implementation across all layers (Controllers, Repositories, Services).
+- **Environment-Driven Config:** Centralized configuration with mandatory presence validation for API keys and DB URLs.
+- **Mock Mode:** Dedicated `MOCK_MODE` for testing without consuming AI API credits.
+- **Graceful Shutdown:** Handles `SIGTERM`/`SIGINT` to close database pools and servers cleanly.
+- **Preflight Support:** Industry-standard handling for browser `OPTIONS` requests.
 
-```bash
-npm install
-```
+## 📋 Prerequisites
 
-### 2. Environment Configuration
+- [Node.js](https://nodejs.org/) (v20.x or higher)
+- [npm](https://www.npmjs.com/)
+- A **PostgreSQL** database (e.g., Supabase connection string)
+- A **Google Gemini API Key** (from [Google AI Studio](https://aistudio.google.com/))
 
-Create a `.env` file in the Backend directory:
+## 🛠️ Installation & Setup
 
-```bash
-OPENAI_API_KEY=your_openai_api_key_here
-PORT=3000
-NODE_ENV=development
-```
+1. **Navigate to the backend directory:**
+   ```bash
+   cd Backend
+   ```
 
-**Get your OpenAI API key from**: https://platform.openai.com/api-keys
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
 
-### 3. Start Development Server
+3. **Configure Environment Variables:**
+   Create a `.env` file in the root of the `Backend` directory:
+   ```env
+   # Server Config
+   PORT=3000
+   NODE_ENV=development
 
-```bash
-npm run dev
-```
+   # Database
+   DATABASE_URL=your_postgresql_connection_string
 
-The server will:
-- Automatically create `chat.db` SQLite database file
-- Initialize the schema automatically
-- Start on `http://localhost:3000`
+   # AI Configuration
+   GEMINI_API_KEY=your_gemini_api_key
+   MOCK_MODE=false
 
-**That's it!** No database setup required - SQLite creates the database file automatically.
+   # Security
+   CORS_ORIGIN=http://localhost:5173
+   ```
 
-## API Endpoints
+4. **Initialize Database:**
+   Ensure your PostgreSQL schema is initialized. You can find the schema in `src/db/schema.sql`.
 
-### POST /chat/message
+5. **Start the development server:**
+   ```bash
+   npm run dev
+   ```
 
-Send a message and get AI response.
+## 🏗️ Architecture
 
-**Request:**
-```json
-{
-  "message": "What are your shipping options?",
-  "sessionId": "optional-uuid"
-}
-```
+The backend follows a clean, layered architecture:
+- `src/controllers/`: Request handling and orchestration.
+- `src/services/`: Business logic and external API integrations (Gemini).
+- `src/repositories/`: Database abstraction layer (PostgreSQL).
+- `src/db/`: Database connection pooling and schemas.
+- `src/middleware/`: CORS handling, error management, and validation.
+- `src/types/`: Shared TypeScript interfaces.
+- `src/utils/`: Shared utilities (Logger, Custom Errors).
 
-**Response:**
-```json
-{
-  "reply": "We offer worldwide shipping in 5-7 days...",
-  "sessionId": "uuid-here"
-}
-```
+## 📜 API Endpoints
 
-### GET /chat/history/:sessionId
+- **POST `/chat/message`**: Processes user messages and returns AI responses.
+- **GET `/chat/history/:sessionId`**: Retrieves conversation history for a specific session.
+- **GET `/health`**: Returns the health status and timestamp of the server.
 
-Get conversation history for a session.
+## 🌐 Deployment (Railway)
 
-**Response:**
-```json
-{
-  "messages": [
-    {
-      "id": "uuid",
-      "sender": "user",
-      "text": "Hello",
-      "timestamp": 1234567890
-    }
-  ],
-  "sessionId": "uuid-here"
-}
-```
+This backend is optimized for deployment on [Railway](https://railway.app/).
 
-### GET /health
 
-Health check endpoint.
-
-## Database
-
-SQLite3 database file: `chat.db` (created automatically)
-
-**Tables:**
-- `conversations` - Session storage
-- `messages` - All chat messages
-
-**Schema** is automatically initialized from `src/db/schema.sqlite.sql`
-
-## Features
-
-- ✅ Automatic database creation (no setup needed)
-- ✅ Session-based conversations
-- ✅ Message persistence
-- ✅ OpenAI integration with context
-- ✅ Conversation history retrieval
-- ✅ Error handling with fallbacks
-- ✅ Request validation
-- ✅ CORS enabled
-- ✅ TypeScript
-
-## Development
-
-```bash
-# Start dev server with hot reload
-npm run dev
-
-# Build for production
-npm run build
-
-# Start production server
-npm start
-```
-
-## Troubleshooting
-
-### Error: "OPENAI_API_KEY environment variable is required"
-- Create `.env` file with your OpenAI API key
-- Get one from: https://platform.openai.com/api-keys
-
-### Database file location
-- The `chat.db` file is created in the Backend root directory
-- You can delete it to reset all conversations
-
-### Port already in use
-- Change `PORT` in `.env` file
-- Or stop the other process using port 3000
-
-## Production Notes
-
-For production deployment:
-- The `chat.db` file should be backed up regularly
-- Consider using PostgreSQL for multi-server deployments
-- SQLite is perfect for single-server deployments
